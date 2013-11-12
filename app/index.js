@@ -49,6 +49,10 @@ NodeGenerator.prototype.doPrompt = function() {
 NodeGenerator.prototype.doGenerate = function() {
   this.template('package.json', 'package.json');
   this.mkdir('lib');
+  this.mkdir('test');
+  this.mkdir('test/bootstrap');
+  this.copy('test/bootstrap/node.js', 'test/bootstrap/node.js');
+  this.template('test/package.test.js', 'test/package.test.js');
   
   this.copy('Makefile', 'Makefile');
   this.mkdir('support');
