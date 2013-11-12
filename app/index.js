@@ -1,4 +1,5 @@
 var generator = require('yeoman-generator')
+  , uri = require('url')
   , path = require('path')
   , fs = require('fs')
   , util = require('util')
@@ -78,6 +79,22 @@ NodeGenerator.prototype.doPrompt = function() {
     message: 'Author URL',
     default: this.pkg && this.pkg.author && this.pkg.author.url ? this.pkg.author.url : ''
   }, {
+    name: 'repositoryUrl',
+    message: 'Repository URL',
+    default: this.pkg && this.pkg.repository && this.pkg.repository.url ? this.pkg.repository.url : '',
+    filter: function(input) {
+      var url = uri.parse(input);
+      if (url.protocol) { return uri.format(url); }
+      var segments = url.pathname.split('/');
+      switch (segments.length) {
+      case 2:
+        return 'git://github.com/' + segments.join('/') + '.git';
+      case 3:
+        return 'git://' + segments.join('/') + '.git';
+      }
+      return input;
+    }
+  }, {
     name: 'licenseType',
     message: 'License',
     default: function() {
@@ -88,6 +105,21 @@ NodeGenerator.prototype.doPrompt = function() {
   
   this.prompt(prompts, function(props) {
     this.props = props;
+    this.props.repositoryType = 'git';
+    
+    var repositoryUrl = uri.parse(props.repositoryUrl)
+      , segments = repositoryUrl.pathname.slice(1).split('/')
+    switch (repositoryUrl.hostname) {
+      case 'github.com': {
+        this.props.bugsUrl = 'http://github.com/' + segments[0] + '/' + segments[1].replace(/\.git$/, '') + '/issues';
+        break;
+      }
+      default: {
+        this.props.bugsUrl = this.pkg && this.pkg.bugs && this.pkg.bugs.url ? this.pkg.bugs.url : '';
+        break;
+      }
+    }
+    
     // TODO: Implement support for more license types
     if (props.licenseType == 'MIT') {
       props.licenseUrl = 'http://www.opensource.org/licenses/MIT';

@@ -11,11 +11,11 @@
     "url": "<%= props.authorUrl %>"<% } %>
   },
   "repository": {
-    "type": "",
-    "url": ""
+    "type": "<%= props.repositoryType %>",
+    "url": "<%= props.repositoryUrl %>"
   },
   "bugs": {
-    "url": ""
+    "url": "<%= props.bugsUrl %>"
   },
   "licenses": [
     {
