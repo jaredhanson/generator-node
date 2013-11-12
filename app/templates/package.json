@@ -1,0 +1,5 @@
+{
+  "name": "<%= props.name %>",
+  "version": "<%= props.version %>",
+  "description": "<%= props.description %>",
+}
