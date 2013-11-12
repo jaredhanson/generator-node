@@ -55,17 +55,7 @@ NodeGenerator.prototype.doGenerate = function() {
   this.template('test/package.test.js', 'test/package.test.js');
   
   this.copy('Makefile', 'Makefile');
-  this.mkdir('support');
-  this.mkdir('support/mk');
-  this.mkdir('support/mk/analysis');
-  this.mkdir('support/mk/reports');
-  this.mkdir('support/mk/test');
-  this.copy('support/mk/node.mk', 'support/mk/node.mk');
-  this.copy('support/mk/analysis/jshint.mk', 'support/mk/analysis/jshint.mk');
-  this.copy('support/mk/analysis/notes.mk', 'support/mk/analysis/notes.mk');
-  this.copy('support/mk/reports/coveralls.mk', 'support/mk/reports/coveralls.mk');
-  this.copy('support/mk/test/istanbul.mk', 'support/mk/test/istanbul.mk');
-  this.copy('support/mk/test/mocha.mk', 'support/mk/test/mocha.mk');
+  this.directory('support', 'support');
   
   this.copy('_gitignore', '.gitignore');
   this.copy('_jshintrc', '.jshintrc');
