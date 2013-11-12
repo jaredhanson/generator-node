@@ -19,10 +19,11 @@
   },
   "licenses": [
     {
-      "type": "MIT",
-      "url": ""
+      "type": "<%= props.licenseType %>"<% if (props.licenseUrl) { %>,
+      "url": "<%= props.licenseUrl %>"<% } %>
     }
   ],
+  "main": "<%= props.main %>",
   "dependencies": {<% _.each(_.pairs(props.dependencies), function(dependency, idx, list) { %>
     "<%= dependency[0] %>": "<%= dependency[1] %>"<% if (idx != list.length - 1) { %>,<% } %><% }); %>
   },

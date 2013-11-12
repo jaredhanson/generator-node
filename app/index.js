@@ -9,6 +9,7 @@ function NodeGenerator(args, options) {
   generator.Base.apply(this, arguments);
   
   this.pkgDefaults = {
+    'main': './lib',
     'dependencies': {
     },
     'devDependencies': {
@@ -33,6 +34,7 @@ function NodeGenerator(args, options) {
 util.inherits(NodeGenerator, generator.Base);
 
 NodeGenerator.prototype.doPrompt = function() {
+  var self = this;
   var done = this.async();
 
   var prompts = [{
@@ -75,11 +77,23 @@ NodeGenerator.prototype.doPrompt = function() {
     name: 'authorUrl',
     message: 'Author URL',
     default: this.pkg && this.pkg.author && this.pkg.author.url ? this.pkg.author.url : ''
+  }, {
+    name: 'licenseType',
+    message: 'License',
+    default: function() {
+      if (self.pkg && self.pkg.licenses && self.pkg.licenses[0]) { return self.pkg.licenses[0].type || 'MIT'; }
+      return 'MIT';
+    }
   }];
   
   this.prompt(prompts, function(props) {
     this.props = props;
+    // TODO: Implement support for more license types
+    if (props.licenseType == 'MIT') {
+      props.licenseUrl = 'http://www.opensource.org/licenses/MIT';
+    }
     
+    this.props.main = this.pkg && this.pkg.main ? this.pkg.main : this.pkgDefaults.main;
     this.props.dependencies = this.pkg && this.pkg.dependencies ? this.pkg.dependencies : this.pkgDefaults.dependencies;
     this.props.devDependencies = this.pkg && this.pkg.devDependencies ? this.pkg.devDependencies : this.pkgDefaults.devDependencies;
     this.props.engines = this.pkg && this.pkg.engines ? this.pkg.engines : this.pkgDefaults.engines;
