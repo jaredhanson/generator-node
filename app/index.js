@@ -24,6 +24,18 @@ NodeGenerator.prototype.doPrompt = function() {
     name: 'description',
     message: 'Description',
     default: ''
+  }, {
+    name: 'authorName',
+    message: 'Author Name',
+    default: ''
+  }, {
+    name: 'authorEmail',
+    message: 'Author Email',
+    default: ''
+  }, {
+    name: 'authorUrl',
+    message: 'Author URL',
+    default: ''
   }];
   
   this.prompt(prompts, function(props) {
