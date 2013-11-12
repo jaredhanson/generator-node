@@ -8,6 +8,21 @@ var generator = require('yeoman-generator')
 function NodeGenerator(args, options) {
   generator.Base.apply(this, arguments);
   
+  this.pkgDefaults = {
+    'dependencies': {
+    },
+    'devDependencies': {
+      'mocha': '1.x.x',
+      'chai': '1.x.x'
+    },
+    'engines': {
+      'node': '*'
+    },
+    'scripts': {
+      'test': 'node_modules/.bin/mocha --reporter spec --require test/bootstrap/node test/*.test.js'
+    }
+  }
+  
   if (existsSync('package.json')) {
     try {
       this.pkg = JSON.parse(fs.readFileSync('package.json'));
@@ -64,6 +79,12 @@ NodeGenerator.prototype.doPrompt = function() {
   
   this.prompt(prompts, function(props) {
     this.props = props;
+    
+    this.props.dependencies = this.pkg && this.pkg.dependencies ? this.pkg.dependencies : this.pkgDefaults.dependencies;
+    this.props.devDependencies = this.pkg && this.pkg.devDependencies ? this.pkg.devDependencies : this.pkgDefaults.devDependencies;
+    this.props.engines = this.pkg && this.pkg.engines ? this.pkg.engines : this.pkgDefaults.engines;
+    this.props.scripts = this.pkg && this.pkg.scripts ? this.pkg.scripts : this.pkgDefaults.scripts;
+    
     done();
   }.bind(this));
 };
