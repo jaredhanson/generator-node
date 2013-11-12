@@ -31,7 +31,23 @@ NodeGenerator.prototype.doPrompt = function() {
   }, {
     name: 'description',
     message: 'Description',
-    default: this.pkg && this.pkg.description ? this.pkg.description : ''
+    default: this.pkg && this.pkg.description ? this.pkg.description : '',
+    filter: function(input) { return input || 'TODO: No description specified'; }
+  }, {
+    name: 'keywords',
+    message: 'Keywords',
+    default: this.pkg && this.pkg.keywords ? this.pkg.keywords.join(', ') : '',
+    filter: function(input) {
+      if (!input) { return []; }
+      var separators = [',', ' '];
+      for (var i = 0, len = separators.length; i < len; i++) {
+        var words = input.split(separators[i]);
+        if (words.length > 1) {
+          return words.map(function(word) { return word.trim(); });
+        }
+      }
+      return [ input.trim() ];
+    }
   }, {
     name: 'authorName',
     message: 'Author Name',
@@ -47,8 +63,6 @@ NodeGenerator.prototype.doPrompt = function() {
   }];
   
   this.prompt(prompts, function(props) {
-    props.description = props.description || 'TODO: No description specified';
-    
     this.props = props;
     done();
   }.bind(this));

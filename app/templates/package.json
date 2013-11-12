@@ -2,7 +2,9 @@
   "name": "<%= props.name %>",
   "version": "<%= props.version %>",
   "description": "<%= props.description %>",
-  "keywords": [],
+  "keywords": [ <% _.each(props.keywords, function(keyword, idx, list) { %>
+    "<%= keyword %>"<% if (idx != list.length - 1) { %>,<% } %><% }); %>
+  ],
   "author": {
     "name": "<%= props.authorName %>",
     "email": "<%= props.authorEmail %>"<% if (props.authorUrl) { %>,
