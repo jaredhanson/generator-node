@@ -105,6 +105,10 @@ NodeGenerator.prototype.doPrompt = function() {
   
   this.prompt(prompts, function(props) {
     this.props = props;
+    
+    var now = new Date();
+    this.props.year = now.getFullYear();
+    
     this.props.repositoryType = 'git';
     
     var repositoryUrl = uri.parse(props.repositoryUrl)
@@ -136,20 +140,33 @@ NodeGenerator.prototype.doPrompt = function() {
 };
 
 NodeGenerator.prototype.doGenerate = function() {
+  if (!existsSync('README.md')) {
+    this.template('README.md', 'README.md');
+  }
+  
   this.template('package.json', 'package.json');
   this.mkdir('lib');
   this.mkdir('test');
   this.mkdir('test/bootstrap');
   this.copy('test/bootstrap/node.js', 'test/bootstrap/node.js');
-  this.template('test/package.test.js', 'test/package.test.js');
-  
-  this.copy('Makefile', 'Makefile');
-  this.directory('support', 'support');
+  if (!existsSync('test/package.test.js')) {
+    this.template('test/package.test.js', 'test/package.test.js');
+  }
   
   this.copy('_gitignore', '.gitignore');
   this.copy('_jshintrc', '.jshintrc');
   this.copy('_npmignore', '.npmignore');
   this.copy('_travis.yml', '.travis.yml');
+  this.copy('Makefile', 'Makefile');
+  this.directory('support', 'support');
+  
+  switch (this.props.licenseType) {
+  case 'MIT':
+    this.template('licenses/MIT', 'LICENSE');
+    break;
+  default:
+    break;
+  }
 }
 
 module.exports = NodeGenerator;
