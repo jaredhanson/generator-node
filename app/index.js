@@ -54,6 +54,9 @@ NodeGenerator.prototype.doGenerate = function() {
   this.mkdir('support/mk');
   
   this.copy('_gitignore', '.gitignore');
+  this.copy('_jshintrc', '.jshintrc');
+  this.copy('_npmignore', '.npmignore');
+  this.copy('_travis.yml', '.travis.yml');
 }
 
 module.exports = NodeGenerator;
