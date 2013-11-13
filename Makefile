@@ -11,19 +11,19 @@ lint: lint-jshint
 # Node.js
 # ==============================================================================
 include support/mk/node.mk
-include support/mk/test/mocha.mk
-include support/mk/test/istanbul.mk
+include support/mk/mocha.mk
+include support/mk/istanbul.mk
 
 # ==============================================================================
 # Analysis
 # ==============================================================================
-include support/mk/analysis/notes.mk
-include support/mk/analysis/jshint.mk
+include support/mk/notes.mk
+include support/mk/jshint.mk
 
 # ==============================================================================
 # Reports
 # ==============================================================================
-include support/mk/reports/coveralls.mk
+include support/mk/coveralls.mk
 
 # ==============================================================================
 # Continuous Integration

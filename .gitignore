@@ -1,5 +1,5 @@
-./build/
-./reports/
+build/
+reports/
 
 # Node.js
 node_modules/
