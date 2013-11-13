@@ -1,3 +1,5 @@
+/* global describe, it, expect */
+
 var pkg = require('..');
 
 describe('<%= props.name %>', function() {
