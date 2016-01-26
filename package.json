@@ -1,7 +1,7 @@
 {
   "name": "generator-node",
   "version": "0.0.0",
-  "description": "Yeoman generator that scaffolds out a Node packaged module.",
+  "description": "Yeoman generator for scaffolding out a new Node.js package.",
   "keywords": [
     "yeoman-generator",
     "node",
