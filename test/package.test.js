@@ -1,8 +1,9 @@
-/* global describe, it, expect */
+/* global describe, it */
 
-var generator = require('..');
+var generator = require('../app');
 
-describe('generator-node', function() {
+
+describe('node:app', function() {
   
   it('should export constructor', function() {
     expect(generator).to.be.a('function');

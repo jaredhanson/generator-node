@@ -1,1 +1,1 @@
-# <%= props.name %>
+# <%= name %>
