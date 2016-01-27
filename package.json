@@ -25,9 +25,11 @@
       "url": "http://www.opensource.org/licenses/MIT"
     }
   ],
-  "main": "app/index.js",
+  "files": [
+    "app"
+  ],
   "dependencies": {
-    "yeoman-generator": "0.14.x"
+    "yeoman-generator": "0.22.x"
   },
   "devDependencies": {
     "mocha": "1.x.x",

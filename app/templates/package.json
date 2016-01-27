@@ -1,39 +1,49 @@
 {
-  "name": "<%= props.name %>",
-  "version": "<%= props.version %>",
-  "description": "<%= props.description %>",
-  "keywords": [<% _.each(props.keywords, function(keyword, idx, list) { %>
-    "<%= keyword %>"<% if (idx != list.length - 1) { %>,<% } %><% }); %>
+  "name": "<%- name %>",
+  "version": "<%- version %>",
+  "description": "<%- description %>",
+<% if (typeof(keywords) !== 'undefined') { -%>
+  "keywords": [
+    "<%- keywords.join('",\n    "') %>"
   ],
+<% } -%>
   "author": {
-    "name": "<%= props.authorName %>",
-    "email": "<%= props.authorEmail %>"<% if (props.authorUrl) { %>,
-    "url": "<%= props.authorUrl %>"<% } %>
+    "name": "<%- authorName %>",
+    "email": "<%- authorEmail %>"<% if (authorUrl) { %>,
+    "url": "<%- authorUrl %>"<% } %>
   },
   "repository": {
-    "type": "<%= props.repositoryType %>",
-    "url": "<%= props.repositoryUrl %>"
+    "type": "<%- repositoryType %>",
+    "url": "<%- repositoryUrl %>"
   },
   "bugs": {
-    "url": "<%= props.bugsUrl %>"
+    "url": "<%- bugsUrl %>"
   },
   "licenses": [
     {
-      "type": "<%= props.licenseType %>"<% if (props.licenseUrl) { %>,
-      "url": "<%= props.licenseUrl %>"<% } %>
+      "type": "<%= licenseType %>"<% if (licenseUrl) { %>,
+      "url": "<%= licenseUrl %>"<% } %>
     }
   ],
-  "main": "<%= props.main %>",
-  "dependencies": {<% _.each(_.pairs(props.dependencies), function(dependency, idx, list) { %>
-    "<%= dependency[0] %>": "<%= dependency[1] %>"<% if (idx != list.length - 1) { %>,<% } %><% }); %>
-  },
-  "devDependencies": {<% _.each(_.pairs(props.devDependencies), function(dependency, idx, list) { %>
-    "<%= dependency[0] %>": "<%= dependency[1] %>"<% if (idx != list.length - 1) { %>,<% } %><% }); %>
-  },
-  "engines": {<% _.each(_.pairs(props.engines), function(engine, idx, list) { %>
-    "<%= engine[0] %>": "<%= engine[1] %>"<% if (idx != list.length - 1) { %>,<% } %><% }); %>
-  },
-  "scripts": {<% _.each(_.pairs(props.scripts), function(script, idx, list) { %>
-    "<%= script[0] %>": "<%= script[1] %>"<% if (idx != list.length - 1) { %>,<% } %><% }); %>
+  "main": "<%= main %>",
+<% if (typeof(dependencies) !== 'undefined') { -%>
+  "dependencies": {
+    <%- Object.keys(dependencies).map(function(key) { return '"' + key + '": "' + dependencies[key] + '"' }).join(',\n    ') %>
   }
+<% } -%>
+<% if (typeof(devDependencies) !== 'undefined') { -%>
+  "devDependencies": {
+    <%- Object.keys(devDependencies).map(function(key) { return '"' + key + '": "' + devDependencies[key] + '"' }).join(',\n    ') %>
+  }
+<% } -%>
+<% if (typeof(engines) !== 'undefined') { -%>
+  "engines": {
+    <%- Object.keys(engines).map(function(key) { return '"' + key + '": "' + engines[key] + '"' }).join(',\n    ') %>
+  }
+<% } -%>
+<% if (typeof(scripts) !== 'undefined') { -%>
+  "scripts": {
+    <%- Object.keys(scripts).map(function(key) { return '"' + key + '": "' + scripts[key] + '"' }).join(',\n    ') %>
+  }
+<% } -%>
 }

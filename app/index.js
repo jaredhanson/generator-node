@@ -2,10 +2,132 @@ var generator = require('yeoman-generator')
   , uri = require('url')
   , path = require('path')
   , fs = require('fs')
-  , util = require('util')
-  , existsSync = fs.existsSync || path.existsSync; // node <=0.6
+  , util = require('util');
 
 
+module.exports = generator.Base.extend({
+  
+  constructor: function () {
+    generator.Base.apply(this, arguments);
+  },
+  
+  initializing: function () {
+    this.props = {};
+    this.props.repositoryType = 'git';
+    
+    //this.props.dependencies = { foo: 'bar' };
+    this.props.keywords = ['one', 'two']
+    
+    var path = this.destinationPath('package.json')
+      , pkg;
+    if (fs.existsSync(path)) {
+      try {
+        pkg = JSON.parse(fs.readFileSync(path));
+        
+        this.props.name = pkg.name;
+        this.props.version = pkg.version;
+        this.props.description = pkg.description;
+        //this.props.keywords = pkg.keywords && pkg.keywords.join(', ');
+        this.props.authorName = pkg.author && pkg.author.name;
+        this.props.authorEmail = pkg.author && pkg.author.email;
+        this.props.authorUrl = pkg.author && pkg.author.url;
+        this.props.repositoryUrl = pkg.repository && pkg.repository.url;
+        
+        this.props.dependencies = pkg.dependencies ? pkg.dependencies : {
+          foo: "barx",
+          bax: "boox"
+        };
+        
+        
+        
+      } catch (_) {}
+    }
+  },
+  
+  prompting: function() {
+    var done = this.async();
+    
+    this.prompt([
+      { type    : 'input',
+        name    : 'name',
+        message : 'Name',
+        default : this.props.name || this.appname // default to name of current directory
+      }, {
+        type    : 'input',
+        name    : 'version',
+        message : 'Version',
+        default : this.props.version || '0.0.0'
+      }, {
+        type    : 'input',
+        name    : 'description',
+        message : 'Description',
+        default : this.props.description || ''
+      }, {
+        type    : 'input',
+        name    : 'authorName',
+        message : 'Author Name',
+        default : this.props.authorName || ''
+      }, {
+        type    : 'input',
+        name    : 'authorEmail',
+        message : 'Author Email',
+        default : this.props.authorEmail || ''
+      }, {
+        type    : 'input',
+        name    : 'authorUrl',
+        message : 'Author URL',
+        default : this.props.authorUrl || ''
+      }, {
+        type    : 'input',
+        name    : 'repositoryUrl',
+        message : 'Repository URL',
+        default : this.props.repositoryUrl || ''
+      }, {
+        type    : 'input',
+        name    : 'licenseType',
+        message : 'License',
+        default : this.props.licenceType || ''
+      }
+    ], function (answers) {
+      this.props.name = answers.name;
+      this.props.version = answers.version;
+      this.props.description = answers.description;
+      this.props.authorName = answers.authorName;
+      this.props.authorEmail = answers.authorEmail;
+      this.props.authorUrl = answers.authorUrl;
+      this.props.repositoryUrl = answers.repositoryUrl;
+      this.props.licenseType = answers.licenseType;
+      // FIXME
+      this.props.bugsUrl = 'foo'
+      this.props.licenseUrl = 'x';
+      this.props.main = 'x';
+      done();
+    }.bind(this));
+  },
+  
+  writing: function() {
+    console.log(this.props)
+    
+    this.fs.copyTpl(this.templatePath('package2.json'), this.destinationPath('package.json'), this.props);
+    
+    this.fs.copy(this.templatePath('_gitignore'), this.destinationPath('.gitignore'));
+    this.fs.copy(this.templatePath('_jshintrc'), this.destinationPath('.jshintrc'));
+    this.fs.copy(this.templatePath('_npmignore'), this.destinationPath('.npmignore'));
+    this.fs.copy(this.templatePath('_travis.yml'), this.destinationPath('.travis.yml'));
+    this.fs.copy(this.templatePath('Makefile'), this.destinationPath('Makefile'));
+  
+    switch (this.props.licenseType) {
+    case 'MIT':
+      //this.template('licenses/MIT', 'LICENSE');
+      break;
+    default:
+      break;
+    }
+  }
+  
+});
+
+/*
 function NodeGenerator(args, options) {
   generator.Base.apply(this, arguments);
   
@@ -168,5 +290,7 @@ NodeGenerator.prototype.doGenerate = function() {
     break;
   }
 }
-
+  
+  
 module.exports = NodeGenerator;
+*/
