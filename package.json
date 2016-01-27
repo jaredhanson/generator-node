@@ -32,13 +32,12 @@
     "yeoman-generator": "0.22.x"
   },
   "devDependencies": {
-    "mocha": "1.x.x",
-    "chai": "1.x.x"
-  },
-  "engines": {
-    "node": "*"
+    "chai": "3.x.x",
+    "mocha": "2.x.x",
+    "yeoman-assert": "^2.1.1",
+    "yeoman-test": "^1.0.0"
   },
   "scripts": {
-    "test": "node_modules/.bin/mocha --reporter spec --require test/bootstrap/node test/*.test.js"
+    "test": "node_modules/.bin/mocha --require test/bootstrap/node test/*.test.js"
   }
 }
