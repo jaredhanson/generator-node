@@ -104,6 +104,22 @@ module.exports = generator.Base.extend({
         name    : 'description',
         message : 'Description',
         default : this.props.description || ''
+      },{
+        name: 'keywords',
+        message: 'Keywords',
+        default: this.props.keywords ? this.props.keywords.join(', ') : '',
+        filter: function(input) {
+          if (!input) { return ''; }
+          
+          var separators = [',', ' '];
+          for (var i = 0, len = separators.length; i < len; i++) {
+            var words = input.split(separators[i]);
+            if (words.length > 1) {
+              return words.map(function(word) { return word.trim(); });
+            }
+          }
+          return [ input.trim() ];
+        }
       }, {
         type    : 'input',
         name    : 'authorName',
@@ -156,13 +172,13 @@ module.exports = generator.Base.extend({
       this.props.authorName = answers.authorName;
       this.props.authorEmail = answers.authorEmail;
       this.props.authorUrl = answers.authorUrl;
-      this.props.repositoryUrl = answers.repositoryUrl;
+      this.props.repositoryUrl = answers.repositoryUrl || undefined;
       this.props.licenseType = answers.licenseType;
       
       
       var url, segments;
       
-      if (answers.repositoryUrl) {
+      if (this.props.repositoryUrl) {
         this.props.repositoryType = 'git';
 
         url = uri.parse(answers.repositoryUrl);
@@ -213,6 +229,22 @@ module.exports = generator.Base.extend({
       this.fs.copy(this.templatePath('_travis.yml'), this.destinationPath('.travis.yml'));
       break;
     }
+    
+    // TODO:
+    /*
+    if (!existsSync('README.md')) {
+      this.template('README.md', 'README.md');
+    }
+  
+    this.template('package.json', 'package.json');
+    this.mkdir('lib');
+    this.mkdir('test');
+    this.mkdir('test/bootstrap');
+    this.copy('test/bootstrap/node.js', 'test/bootstrap/node.js');
+    if (!existsSync('test/package.test.js')) {
+      this.template('test/package.test.js', 'test/package.test.js');
+    }
+    */
   }
   
 });

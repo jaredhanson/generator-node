@@ -13,8 +13,8 @@
     "url": "<%- authorUrl %>"<% } %>
   },
 <% if (typeof(repositoryUrl) !== 'undefined') { -%>
-  "repository": {
-    "type": "<%- repositoryType %>",
+  "repository": {<% if (typeof(repositoryType) !== 'undefined') { -%>
+    "type": "<%- repositoryType %>",<% } %>
     "url": "<%- repositoryUrl %>"
   },
 <% } -%>
