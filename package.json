@@ -19,6 +19,7 @@
   "bugs": {
     "url": "http://github.com/jaredhanson/generator-node/issues"
   },
+  "license": "MIT",
   "licenses": [
     {
       "type": "MIT",
@@ -35,7 +36,8 @@
     "chai": "3.x.x",
     "mocha": "2.x.x",
     "yeoman-assert": "^2.1.1",
-    "yeoman-test": "^1.0.0"
+    "yeoman-test": "^1.0.0",
+    "@jaredhanson/make-node": "0.2.x"
   },
   "scripts": {
     "test": "node_modules/.bin/mocha --require test/bootstrap/node test/*.test.js"
