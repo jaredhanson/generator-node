@@ -15,7 +15,7 @@ module.exports = generator.Base.extend({
     });
     
     this.option('assert', {
-      desc: 'Assewrtion library to use in test suite',
+      desc: 'Assertion library to use in test suite',
       defaults: 'chai',
       type: String
     });
@@ -35,29 +35,31 @@ module.exports = generator.Base.extend({
   
   initializing: function () {
     this.props = {};
+    this.props.year = (new Date()).getFullYear();
     
-    var now = new Date();
-    this.props.year = now.getFullYear();
-    
-    this.props.repositoryType = 'git';
     this.props.main = './lib';
     
     switch (this.options.test) {
     case 'mocha':
       this.props.devDependencies = this.props.devDependencies || {};
       this.props.devDependencies.mocha = '^2.0.0';
+      this.props.scripts = this.props.scripts || {};
+      this.props.scripts.test = 'node_modules/.bin/mocha --require test/bootstrap/node test/*.test.js';
       break;
+    case 'none':
+      this.props.scripts = this.props.scripts || {};
+      this.props.scripts.test = 'echo \\"Error: no test specified\\" && exit 1';
     }
     
-    switch (this.options.assert) {
-    case 'chai':
-      this.props.devDependencies = this.props.devDependencies || {};
-      this.props.devDependencies.chai = '^3.0.0';
-      break;
+    if (this.options.test !== 'none') {
+      switch (this.options.assert) {
+      case 'chai':
+        this.props.devDependencies = this.props.devDependencies || {};
+        this.props.devDependencies.chai = '^3.0.0';
+        break;
+      }
     }
     
-    //this.props.dependencies = { foo: 'bar' };
-    this.props.keywords = ['one', 'two']
     
     var path = this.destinationPath('package.json')
       , pkg;
@@ -68,7 +70,7 @@ module.exports = generator.Base.extend({
         this.props.name = pkg.name;
         this.props.version = pkg.version;
         this.props.description = pkg.description;
-        //this.props.keywords = pkg.keywords && pkg.keywords.join(', ');
+        this.props.keywords = pkg.keywords;
         this.props.authorName = pkg.author && pkg.author.name;
         this.props.authorEmail = pkg.author && pkg.author.email;
         this.props.authorUrl = pkg.author && pkg.author.url;
@@ -76,13 +78,10 @@ module.exports = generator.Base.extend({
         this.props.bugsUrl = pkg.bugs && pkg.bugs.url;
         
         this.props.main = pkg.main;
-        this.props.dependencies = pkg.dependencies ? pkg.dependencies : {
-          foo: "barx",
-          bax: "boox"
-        };
-        
+        this.props.dependencies = pkg.dependencies
         this.props.devDependencies = pkg.devDependencies;
-        
+        this.props.engines = pkg.engines;
+        this.props.scripts = pkg.scripts;
       } catch (_) {}
     }
   },
@@ -163,13 +162,15 @@ module.exports = generator.Base.extend({
       
       var url, segments;
       
-      if (!this.props.bugsUrl && answers.repositoryUrl) {
+      if (answers.repositoryUrl) {
+        this.props.repositoryType = 'git';
+
         url = uri.parse(answers.repositoryUrl);
         segments = url.pathname.slice(1).split('/');
         
         switch (url.hostname) {
         case 'github.com':
-          this.props.bugsUrl = 'http://github.com/' + segments[0] + '/' + segments[1].replace(/\.git$/, '') + '/issues';
+          this.props.bugsUrl = this.props.bugsUrl || 'http://github.com/' + segments[0] + '/' + segments[1].replace(/\.git$/, '') + '/issues';
           break;
         }
       }
@@ -179,7 +180,6 @@ module.exports = generator.Base.extend({
         this.props.licenseUrl = 'http://opensource.org/licenses/MIT';
         break;
       }
-      
       
       done();
     }.bind(this));

@@ -12,15 +12,18 @@
     "email": "<%- authorEmail %>"<% if (authorUrl) { %>,
     "url": "<%- authorUrl %>"<% } %>
   },
+<% if (typeof(repositoryUrl) !== 'undefined') { -%>
   "repository": {
     "type": "<%- repositoryType %>",
     "url": "<%- repositoryUrl %>"
   },
+<% } -%>
 <% if (typeof(bugsUrl) !== 'undefined') { -%>
   "bugs": {
     "url": "<%- bugsUrl %>"
   },
 <% } -%>
+  "license": "<%- licenseType %>",
   "licenses": [
     {
       "type": "<%= licenseType %>"<% if (licenseUrl) { %>,
