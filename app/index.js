@@ -14,6 +14,12 @@ module.exports = generator.Base.extend({
       type: String
     });
     
+    this.option('assert', {
+      desc: 'Assewrtion library to use in test suite',
+      defaults: 'chai',
+      type: String
+    });
+    
     this.option('lint', {
       desc: 'Linter to use for project',
       defaults: 'jshint',
@@ -34,6 +40,21 @@ module.exports = generator.Base.extend({
     this.props.year = now.getFullYear();
     
     this.props.repositoryType = 'git';
+    this.props.main = './lib';
+    
+    switch (this.options.test) {
+    case 'mocha':
+      this.props.devDependencies = this.props.devDependencies || {};
+      this.props.devDependencies.mocha = '^2.0.0';
+      break;
+    }
+    
+    switch (this.options.assert) {
+    case 'chai':
+      this.props.devDependencies = this.props.devDependencies || {};
+      this.props.devDependencies.chai = '^3.0.0';
+      break;
+    }
     
     //this.props.dependencies = { foo: 'bar' };
     this.props.keywords = ['one', 'two']
@@ -52,13 +73,15 @@ module.exports = generator.Base.extend({
         this.props.authorEmail = pkg.author && pkg.author.email;
         this.props.authorUrl = pkg.author && pkg.author.url;
         this.props.repositoryUrl = pkg.repository && pkg.repository.url;
+        this.props.bugsUrl = pkg.bugs && pkg.bugs.url;
         
+        this.props.main = pkg.main;
         this.props.dependencies = pkg.dependencies ? pkg.dependencies : {
           foo: "barx",
           bax: "boox"
         };
         
-        
+        this.props.devDependencies = pkg.devDependencies;
         
       } catch (_) {}
     }
@@ -106,6 +129,8 @@ module.exports = generator.Base.extend({
         message : 'Repository URL',
         default : this.props.repositoryUrl,
         filter: function(input) {
+          if (input.length == 0) { return input; }
+          
           var url = uri.parse(input);
           if (url.protocol) { return uri.format(url); }
           
@@ -134,10 +159,28 @@ module.exports = generator.Base.extend({
       this.props.authorUrl = answers.authorUrl;
       this.props.repositoryUrl = answers.repositoryUrl;
       this.props.licenseType = answers.licenseType;
-      // FIXME
-      this.props.bugsUrl = 'foo'
-      this.props.licenseUrl = 'x';
-      this.props.main = 'x';
+      
+      
+      var url, segments;
+      
+      if (!this.props.bugsUrl && answers.repositoryUrl) {
+        url = uri.parse(answers.repositoryUrl);
+        segments = url.pathname.slice(1).split('/');
+        
+        switch (url.hostname) {
+        case 'github.com':
+          this.props.bugsUrl = 'http://github.com/' + segments[0] + '/' + segments[1].replace(/\.git$/, '') + '/issues';
+          break;
+        }
+      }
+      
+      switch (this.props.licenseType) {
+      case 'MIT':
+        this.props.licenseUrl = 'http://opensource.org/licenses/MIT';
+        break;
+      }
+      
+      
       done();
     }.bind(this));
   },
