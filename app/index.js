@@ -8,6 +8,12 @@ module.exports = generator.Base.extend({
   constructor: function () {
     generator.Base.apply(this, arguments);
     
+    this.option('scm', {
+      desc: 'Source code management to use for project',
+      defaults: 'git',
+      type: String
+    });
+    
     this.option('test', {
       desc: 'Test framework to use for project',
       defaults: 'mocha',
@@ -207,11 +213,6 @@ module.exports = generator.Base.extend({
     if (!fs.existsSync(path)) {
       this.fs.copyTpl(this.templatePath('README.md'), path, this.props);
     }
-    
-    this.fs.copyTpl(this.templatePath('package.json'), this.destinationPath('package.json'), this.props);
-    this.fs.copy(this.templatePath('Makefile'), this.destinationPath('Makefile'));
-    this.fs.copy(this.templatePath('_gitignore'), this.destinationPath('.gitignore'));
-    this.fs.copy(this.templatePath('_npmignore'), this.destinationPath('.npmignore'));
   
     switch (this.props.licenseType) {
     case 'MIT':
@@ -224,6 +225,16 @@ module.exports = generator.Base.extend({
       break;
     }
     
+    this.fs.copy(this.templatePath('Makefile'), this.destinationPath('Makefile'));
+    
+    
+    this.fs.copyTpl(this.templatePath('package.json'), this.destinationPath('package.json'), this.props);
+    this.fs.copy(this.templatePath('_npmignore'), this.destinationPath('.npmignore'));
+    
+    path = this.destinationPath('lib/index.js')
+    if (!fs.existsSync(path)) {
+      this.fs.copyTpl(this.templatePath('lib/index.js'), path, this.props);
+    }
     
     path = this.destinationPath('test/package.test.js')
     if (!fs.existsSync(path)) {
@@ -238,6 +249,12 @@ module.exports = generator.Base.extend({
       case 'none':
         break;
       }
+    }
+  
+    switch (this.options.scm) {
+    case 'git':
+      this.fs.copy(this.templatePath('_gitignore'), this.destinationPath('.gitignore'));
+      break;
     }
   
     switch (this.options.lint) {
