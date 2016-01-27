@@ -38,23 +38,24 @@ module.exports = generator.Base.extend({
     this.props.year = (new Date()).getFullYear();
     
     this.props.main = './lib';
+    this.props.devDependencies = {};
+    this.props.devDependencies['@jaredhanson/make-node'] = '^0.2.0';
     
     switch (this.options.test) {
     case 'mocha':
-      this.props.devDependencies = this.props.devDependencies || {};
       this.props.devDependencies.mocha = '^2.0.0';
       this.props.scripts = this.props.scripts || {};
-      this.props.scripts.test = 'node_modules/.bin/mocha --require test/bootstrap/node test/*.test.js';
+      this.props.scripts.test = 'node_modules/.bin/mocha test/*.test.js';
       break;
     case 'none':
       this.props.scripts = this.props.scripts || {};
       this.props.scripts.test = 'echo \\"Error: no test specified\\" && exit 1';
+      break;
     }
     
     if (this.options.test !== 'none') {
       switch (this.options.assert) {
       case 'chai':
-        this.props.devDependencies = this.props.devDependencies || {};
         this.props.devDependencies.chai = '^3.0.0';
         break;
       }
@@ -202,6 +203,11 @@ module.exports = generator.Base.extend({
   },
   
   writing: function() {
+    var path = this.destinationPath('README.md')
+    if (!fs.existsSync(path)) {
+      this.fs.copyTpl(this.templatePath('README.md'), path, this.props);
+    }
+    
     this.fs.copyTpl(this.templatePath('package.json'), this.destinationPath('package.json'), this.props);
     this.fs.copy(this.templatePath('Makefile'), this.destinationPath('Makefile'));
     this.fs.copy(this.templatePath('_gitignore'), this.destinationPath('.gitignore'));
@@ -216,6 +222,22 @@ module.exports = generator.Base.extend({
       break;
     default:
       break;
+    }
+    
+    
+    path = this.destinationPath('test/package.test.js')
+    if (!fs.existsSync(path)) {
+      switch (this.options.test) {
+      case 'mocha':
+        switch (this.options.assert) {
+        case 'chai':
+          this.fs.copyTpl(this.templatePath('test/package.test.js'), path, this.props);
+          break;
+        }
+        break;
+      case 'none':
+        break;
+      }
     }
   
     switch (this.options.lint) {
@@ -232,15 +254,10 @@ module.exports = generator.Base.extend({
     
     // TODO:
     /*
-    if (!existsSync('README.md')) {
-      this.template('README.md', 'README.md');
-    }
+    
   
-    this.template('package.json', 'package.json');
     this.mkdir('lib');
     this.mkdir('test');
-    this.mkdir('test/bootstrap');
-    this.copy('test/bootstrap/node.js', 'test/bootstrap/node.js');
     if (!existsSync('test/package.test.js')) {
       this.template('test/package.test.js', 'test/package.test.js');
     }
