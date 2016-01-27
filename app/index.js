@@ -9,7 +9,7 @@ module.exports = generator.Base.extend({
     generator.Base.apply(this, arguments);
     
     this.option('test', {
-      desc: 'Test framwork to use for project',
+      desc: 'Test framework to use for project',
       defaults: 'mocha',
       type: String
     });
