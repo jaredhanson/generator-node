@@ -9,9 +9,12 @@ var fs = require('fs');
 
 describe('node:app', function() {
   
-  describe('defaults', function () {
+  describe('with --ci=none option', function () {
     before(function(done) {
       helpers.run(path.join(__dirname, '../app'))
+        .withOptions({
+          ci: 'none'
+        })
         .withPrompts({
           name: 'foo'
         })
@@ -25,10 +28,6 @@ describe('node:app', function() {
     
     it('creates files', function () {
       var expected = [
-        '.gitignore',
-        '.jshintrc',
-        '.npmignore',
-        '.travis.yml',
         'LICENSE',
         'Makefile',
         'README.md',
@@ -40,10 +39,12 @@ describe('node:app', function() {
       assert.file(expected);
     });
     
-    it('creates test/package.test.js for use with mocha and chai', function() {
-      var actual = fs.readFileSync('test/package.test.js', 'utf8');
-      var expected = fs.readFileSync(path.join(__dirname, './fixtures/test/mocha-chai/package.test.out.js'), 'utf8');
-      assert.textEqual(actual, expected);
+    it('does not create CI files', function () {
+      var expected = [
+        '.travis.yml',
+      ];
+
+      assert.noFile(expected);
     });
   });
   
