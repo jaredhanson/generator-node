@@ -1,8 +1,6 @@
 var generator = require('yeoman-generator')
   , uri = require('url')
-  , path = require('path')
-  , fs = require('fs')
-  , util = require('util');
+  , fs = require('fs');
 
 
 module.exports = generator.Base.extend({
@@ -84,22 +82,38 @@ module.exports = generator.Base.extend({
         type    : 'input',
         name    : 'authorName',
         message : 'Author Name',
-        default : this.props.authorName || ''
+        default : this.props.authorName,
+        store   : this.props.authorName !== undefined ? false : true
       }, {
         type    : 'input',
         name    : 'authorEmail',
         message : 'Author Email',
-        default : this.props.authorEmail || ''
+        default : this.props.authorEmail,
+        store   : this.props.authorEmail !== undefined ? false : true
       }, {
         type    : 'input',
         name    : 'authorUrl',
         message : 'Author URL',
-        default : this.props.authorUrl || ''
+        default : this.props.authorUrl,
+        store   : this.props.authorUrl !== undefined ? false : true
       }, {
         type    : 'input',
         name    : 'repositoryUrl',
         message : 'Repository URL',
-        default : this.props.repositoryUrl || ''
+        default : this.props.repositoryUrl,
+        filter: function(input) {
+          var url = uri.parse(input);
+          if (url.protocol) { return uri.format(url); }
+          
+          var segments = url.pathname.split('/');
+          switch (segments.length) {
+          case 2:
+            return 'git://github.com/' + segments.join('/') + '.git';
+          case 3:
+            return 'git://' + segments.join('/') + '.git';
+          }
+          return input;
+        }
       }, {
         type    : 'input',
         name    : 'licenseType',
