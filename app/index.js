@@ -29,6 +29,10 @@ module.exports = generator.Base.extend({
   
   initializing: function () {
     this.props = {};
+    
+    var now = new Date();
+    this.props.year = now.getFullYear();
+    
     this.props.repositoryType = 'git';
     
     //this.props.dependencies = { foo: 'bar' };
@@ -115,10 +119,11 @@ module.exports = generator.Base.extend({
           return input;
         }
       }, {
-        type    : 'input',
+        type    : 'list',
         name    : 'licenseType',
         message : 'License',
-        default : this.props.licenceType || ''
+        choices : [ 'MIT', 'UNLICENSED' ],
+        default : this.props.licenceType || 'MIT'
       }
     ], function (answers) {
       this.props.name = answers.name;
@@ -146,6 +151,9 @@ module.exports = generator.Base.extend({
     switch (this.props.licenseType) {
     case 'MIT':
       this.fs.copyTpl(this.templatePath('licenses/MIT'), this.destinationPath('LICENSE'), this.props);
+      break;
+    case 'UNLICENSED':
+      this.fs.copyTpl(this.templatePath('licenses/UNLICENSED'), this.destinationPath('LICENSE'), this.props);
       break;
     default:
       break;
