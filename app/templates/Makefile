@@ -1,8 +1,8 @@
 include node_modules/@jaredhanson/make-node/main.mk
 
 
-SOURCES ?= lib/*.js lib/**/*.js
-TESTS ?= test/*.test.js test/**/*.test.js
+SOURCES = lib/*.js lib/**/*.js
+TESTS = test/*.test.js test/**/*.test.js
 
 LCOVFILE = ./reports/coverage/lcov.info
 
