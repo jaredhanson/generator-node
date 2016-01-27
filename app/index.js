@@ -108,7 +108,7 @@ module.exports = generator.Base.extend({
   writing: function() {
     console.log(this.props)
     
-    this.fs.copyTpl(this.templatePath('package2.json'), this.destinationPath('package.json'), this.props);
+    this.fs.copyTpl(this.templatePath('package.json'), this.destinationPath('package.json'), this.props);
     
     this.fs.copy(this.templatePath('_gitignore'), this.destinationPath('.gitignore'));
     this.fs.copy(this.templatePath('_jshintrc'), this.destinationPath('.jshintrc'));
