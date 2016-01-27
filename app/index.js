@@ -231,7 +231,7 @@ module.exports = generator.Base.extend({
       case 'mocha':
         switch (this.options.assert) {
         case 'chai':
-          this.fs.copyTpl(this.templatePath('test/package.test.js'), path, this.props);
+          this.fs.copyTpl(this.templatePath('test/mocha-chai/package.test.js'), path, this.props);
           break;
         }
         break;
@@ -251,17 +251,6 @@ module.exports = generator.Base.extend({
       this.fs.copy(this.templatePath('_travis.yml'), this.destinationPath('.travis.yml'));
       break;
     }
-    
-    // TODO:
-    /*
-    
-  
-    this.mkdir('lib');
-    this.mkdir('test');
-    if (!existsSync('test/package.test.js')) {
-      this.template('test/package.test.js', 'test/package.test.js');
-    }
-    */
   }
   
 });
