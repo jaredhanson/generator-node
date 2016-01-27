@@ -26,7 +26,7 @@
   "license": "<%- licenseType %>",
   "licenses": [
     {
-      "type": "<%= licenseType %>"<% if (licenseUrl) { %>,
+      "type": "<%= licenseType %>"<% if (typeof(licenseUrl) !== 'undefined') { %>,
       "url": "<%= licenseUrl %>"<% } %>
     }
   ],
