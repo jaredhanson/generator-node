@@ -9,6 +9,24 @@ module.exports = generator.Base.extend({
   
   constructor: function () {
     generator.Base.apply(this, arguments);
+    
+    this.option('test', {
+      desc: 'Test framwork to use for project',
+      defaults: 'mocha',
+      type: String
+    });
+    
+    this.option('lint', {
+      desc: 'Linter to use for project',
+      defaults: 'jshint',
+      type: String
+    });
+    
+    this.option('ci', {
+      desc: 'Continuous integration service to use for project',
+      defaults: 'travis-ci',
+      type: String
+    });
   },
   
   initializing: function () {
@@ -106,21 +124,28 @@ module.exports = generator.Base.extend({
   },
   
   writing: function() {
-    console.log(this.props)
-    
     this.fs.copyTpl(this.templatePath('package.json'), this.destinationPath('package.json'), this.props);
-    
-    this.fs.copy(this.templatePath('_gitignore'), this.destinationPath('.gitignore'));
-    this.fs.copy(this.templatePath('_jshintrc'), this.destinationPath('.jshintrc'));
-    this.fs.copy(this.templatePath('_npmignore'), this.destinationPath('.npmignore'));
-    this.fs.copy(this.templatePath('_travis.yml'), this.destinationPath('.travis.yml'));
     this.fs.copy(this.templatePath('Makefile'), this.destinationPath('Makefile'));
+    this.fs.copy(this.templatePath('_gitignore'), this.destinationPath('.gitignore'));
+    this.fs.copy(this.templatePath('_npmignore'), this.destinationPath('.npmignore'));
   
     switch (this.props.licenseType) {
     case 'MIT':
-      //this.template('licenses/MIT', 'LICENSE');
+      this.fs.copyTpl(this.templatePath('licenses/MIT'), this.destinationPath('LICENSE'), this.props);
       break;
     default:
+      break;
+    }
+  
+    switch (this.options.lint) {
+    case 'jshint':
+      this.fs.copy(this.templatePath('_jshintrc'), this.destinationPath('.jshintrc'));
+      break;
+    }
+    
+    switch (this.options.ci) {
+    case 'travis-ci':
+      this.fs.copy(this.templatePath('_travis.yml'), this.destinationPath('.travis.yml'));
       break;
     }
   }
