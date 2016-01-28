@@ -45,7 +45,7 @@ module.exports = generator.Base.extend({
     
     this.props.main = './lib';
     this.props.devDependencies = {};
-    this.props.devDependencies['@jaredhanson/make-node'] = '^0.2.0';
+    this.props.devDependencies['make-node'] = '^0.3.0';
     
     switch (this.options.test) {
     case 'mocha':
